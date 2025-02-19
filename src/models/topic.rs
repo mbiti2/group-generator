@@ -1,12 +1,19 @@
 
+use cli_table::Color;
+use cli_table::{format::Justify, Table};
 use crate::traits::gen_data_id::GenDataId;
 use crate::{data_collection::DataCollection,
  enums::difficulty::Difficulty};
 use crate::traits::collect::Collect;
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Table)]
 pub struct Topic {
+    #[table(title = "ID", justify = "Justify::Right", color = "Color::Green")]
     id: u32,
+
+    #[table(title = "Title", color = "Color::Green")]
     title: String,
+
+    #[table(title = "Difficulty", color = "Color::Green")]
     difficulty: Difficulty
 }
 

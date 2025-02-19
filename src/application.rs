@@ -1,13 +1,14 @@
 use std::{collections::HashSet, fmt::Debug};
 
+use cli_table::{print_stdout, Table, WithTitle};
 use rand::seq::SliceRandom;
 
 use crate::{
     data_collection::DataCollection,
-    enums::labelling::{self, Labelling},
+    enums::labelling::Labelling,
     models::{
         group::{self, Group},
-        student::Student,
+        student::{self, Student},
         topic::Topic,
     },
     traits::{collect::Collect, gen_data_id::GenDataId},
@@ -40,26 +41,45 @@ impl Application {
     pub fn run(&mut self) {
         println!("Enter new topics.");
 
+        let AppState{
+            topics,
+            students,
+            ..
+        } = &mut self.state;
+
         loop {
-            Self::collect_gen_data(&mut self.state.topics);
+            Self::collect_gen_data(topics);
 
             if Self::should_break() {
                 break;
             }
         }
-
+       
+        Helper::display(topics.iter());
         println!("Enter student names.");
-
+        
         loop {
-            Self::collect_gen_data(&mut self.state.students);
-
+            Self::collect_gen_data(students);
+            
             if Self::should_break() {
                 break;
             }
         }
+        
+        Helper::display(students.iter());
 
         // Generate groups
         self.gen_groups();
+
+        let groups = self.state.groups.clone();
+        for group in groups {
+            let topic = group.get_topic();
+            let students = group.get_students();
+            Helper::display(vec![group].iter());
+            println!("{:?}", topic);
+            Helper::display(students.iter());
+        }
+        Helper::display(&self.state.groups.clone());
     }
 
     fn gen_groups(&mut self) {
@@ -105,7 +125,6 @@ impl Application {
 
             let mut new_group = Group::from(label, topic.to_owned(), grp_members);
             new_group.set_id(current_group_id as u32);
-            println!("{:?}", new_group);
             new_groups.push(new_group);
         }
 
@@ -115,7 +134,6 @@ impl Application {
     fn collect_gen_data<T: GenDataId<u32> + Debug + Collect>(elements: &mut Vec<T>) {
         let mut new_element = T::collect();
         new_element.set_id((elements.len() + 1) as u32);
-        println!("{:?}", new_element);
         elements.push(new_element);
     }
 
@@ -150,4 +168,10 @@ impl Helper {
             }
         }
     }
+
+    pub fn display<T: Table + WithTitle>(table: T) {
+
+        let _ = print_stdout(table.with_title());
+   }
+
 }

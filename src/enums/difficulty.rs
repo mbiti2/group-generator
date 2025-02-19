@@ -1,3 +1,4 @@
+use std::fmt::{write, Display};
 
 #[derive(Debug, Clone)]
 pub enum Difficulty {
@@ -24,5 +25,11 @@ impl Into<&str> for Difficulty {
             Difficulty::Medium => "medium",
             Difficulty::EAsy => "easy",
         }
+    }
+}
+
+impl Display for Difficulty {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
     }
 }

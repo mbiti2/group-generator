@@ -1,11 +1,15 @@
-
+use cli_table::{format::Justify, Table};
+use cli_table::Color;
 use crate::{data_collection::DataCollection,
     traits::{collect::Collect, 
            gen_data_id::GenDataId}};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Table)]
 pub struct Student {
+    #[table(title = "ID", justify = "Justify::Right", color = "Color::Blue")]
     id: u32,
+
+    #[table(title = "Name", color = "Color::Blue")]
     name: String,
 }
 impl Student {
