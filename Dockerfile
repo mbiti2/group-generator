@@ -12,7 +12,8 @@ FROM alpine:latest
 
 WORKDIR /app
 
+RUN apk add libgcc
 
 COPY --from=build /app/target/release/group-generator /app/group-generator
 
-CMD [ "/app/group-generator" ]w
+CMD [ "/app/group-generator" ]
